@@ -21,7 +21,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      # Need write access to contents to git-tag.
+      contents: "write"
+      id-token: "write"
     steps:
       - name: Print the inputs
         run: |
