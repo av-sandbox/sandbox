@@ -26,14 +26,14 @@ jobs:
       - name: Print the inputs
         run: |
           echo "Inputs:"
-          echo "deployment_id=${{ inputs.release_cut_id }}"
-          echo "commit_sha=${{ inputs.commit_sha }}"
-          echo "version=${{ inputs.version }}"
+          echo "aviator_release_cut_id=${{ inputs.aviator_release_cut_id }}"
+          echo "aviator_release_cut_commit_hash=${{ inputs.aviator_release_cut_commit_hash }}"
+          echo "aviator_release_candidate_version=${{ inputs.aviator_release_candidate_version }}"
 
       # Checks-out your repository
       - uses: actions/checkout@v4
         with:
-          ref: "${{ inputs.commit_sha }}"
+          ref: "${{ inputs.aviator_release_cut_commit_hash }}"
           lfs: true
           submodules: 'recursive'
           
@@ -43,7 +43,7 @@ jobs:
           url: 'https://api.aviator.co/api/v1/sync-build-github-action'
           method: 'POST'
           bearerToken: ${{ secrets.AVIATOR_API_TOKEN }}
-          data: '{"release_cut_id": "${{ inputs.release_cut_id }}", "workflow_run_id": "${{ github.run_id }}"}'
+          data: '{"release_cut_id": "${{ inputs.aviator_release_cut_id }}", "workflow_run_id": "${{ github.run_id }}"}'
           
       - name: Wait for 60s or until canceled
         shell: bash
@@ -53,5 +53,5 @@ jobs:
       - if: ${{ success() }}
         name: git_tagging
         run: |
-          git tag --force ${{ inputs.version }}
-          git push origin --force ${{ inputs.version }}
+          git tag --force ${{ inputs.aviator_release_candidate_version }}
+          git push origin --force ${{ inputs.aviator_release_candidate_version }}
