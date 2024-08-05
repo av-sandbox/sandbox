@@ -5,15 +5,15 @@ name: deploy
 on:
   workflow_dispatch:
     inputs:
-      deployment_id:
+      aviator_deployment_id:
         description: "Database ID of deployment"
         required: false
         type: string
-      commit_sha:
+      aviator_release_cut_commit_hash:
         description: "Commit SHA to be deployed"
         required: false
         type: string
-      version:
+      aviator_release_candidate_version:
         description: "Version to deploy"
         required: true
         type: string
@@ -26,14 +26,14 @@ jobs:
       - name: Print the inputs
         run: |
           echo "Inputs:"
-          echo "deployment_id=${{ inputs.deployment_id }}"
-          echo "commit_sha=${{ inputs.commit_sha }}"
-          echo "version=${{ inputs.version }}"
+          echo "aviator_deployment_id=${{ inputs.aviator_deployment_id }}"
+          echo "aviator_release_cut_commit_hash=${{ inputs.aviator_release_cut_commit_hash }}"
+          echo "aviator_release_candidate_version=${{ inputs.aviator_release_candidate_version }}"
 
       # Checks-out your repository
       - uses: actions/checkout@v4
         with:
-          ref: "${{ inputs.version }}"
+          ref: "${{ inputs.aviator_release_candidate_version }}"
           lfs: true
           submodules: 'recursive'
           
@@ -43,7 +43,7 @@ jobs:
           url: 'https://api.aviator.co/api/v1/sync-deploy-github-action'
           method: 'POST'
           bearerToken: ${{ secrets.AVIATOR_API_TOKEN }}
-          data: '{"deployment_id": "${{ inputs.deployment_id }}", "workflow_run_id": "${{ github.run_id }}"}'
+          data: '{"deployment_id": "${{ inputs.aviator_deployment_id }}", "workflow_run_id": "${{ github.run_id }}"}'
   
       - name: Wait until canceled
         shell: bash
