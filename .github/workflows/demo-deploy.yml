@@ -48,4 +48,4 @@ jobs:
       - name: Wait until canceled
         shell: bash
         run: |
-          sleep 60
+          sleep 15
